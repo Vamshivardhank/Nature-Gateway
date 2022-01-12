@@ -112,6 +112,7 @@ app.use((err,req,res,next)=>{
     const { message="Something Went Wrong",statusCode=500}=err;
     res.status(statusCode).render('campgrounds/errors',{err});
 })
-app.listen(3000,()=>{
-    console.log("Listining on server 3000");
+const port=process.env.PORT || 3000;
+app.listen(port,()=>{
+    console.log(`Listining on server ${port}`);
 });
