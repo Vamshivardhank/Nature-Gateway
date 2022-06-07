@@ -25,6 +25,6 @@ router.get('/:id/edit',isLoggedIn,isAuthor,catchAsync(campgrounds.renderEditForm
 
 router.put('/:id',isLoggedIn, isAuthor,upload.array('images'),validateCampground,catchAsync(campgrounds.editCampground));
 
-router.delete('/:id',isAuthor,catchAsync(campgrounds.deleteCampground));
+router.delete('/:id',isLoggedIn,isAuthor,catchAsync(campgrounds.deleteCampground));
 
 module.exports=router;

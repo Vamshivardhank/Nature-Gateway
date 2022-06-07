@@ -23,12 +23,15 @@ module.exports.renderLoginForm=(req,res)=>{
 };
 module.exports.Login= (req,res)=>{
     req.flash('success','Welcome to Yelp-camp');
-    const redirect=req.session.returnTo || '/campgrounds';
+    const redirectUrl=req.session.returnTo || '/campgrounds';
     delete req.session.returnTo;
-    res.redirect(redirect);
+    res.redirect(redirectUrl);
 };
 module.exports.Logout=(req,res)=>{
-    req.logout();
+    req.logout((err)=>{
+        console.log("Error in Logout...",err);
+    });
     req.flash('success','Good Bye');
     res.redirect('/campgrounds');
 }
+

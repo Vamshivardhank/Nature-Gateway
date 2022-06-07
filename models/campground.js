@@ -1,7 +1,15 @@
 const { string } = require('joi');
 const mongoose=require('mongoose');
 const Review = require('./reviews');
-const Schema=mongoose.Schema;
+const {Schema}=mongoose;
+mongoose.connect('mongodb://localhost:27017/yelp-camp')
+    .then(()=>{
+        console.log("Connecting to Database");
+    })
+    .catch(err=>{
+        console.log("Error in connecting to mongodb");
+        console.log(err);
+    });
 const imageSchema= new Schema({
     url:String,
     filename:String

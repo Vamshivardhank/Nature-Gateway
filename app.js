@@ -26,43 +26,57 @@ const User=require('./models/user');
 const registerRoute=require('./routes/user');
 const mongoSanitize = require('express-mongo-sanitize');
 const session=require('express-session'); 
-
 const MongoDBStore=require('connect-mongo');
+const exp = require('constants');
 
 
  const dbUrl=process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
 
-mongoose.connect(dbUrl,{
+
+ mongoose.createConnection(dbUrl, {
     useNewUrlParser:true,
     useUnifiedTopology:true,
-})
-.then(()=>{
-    console.log("Connected to Database");
-})
-.catch(err=>{
-    console.log('error');
-    console.log(err);
 });
+// .then(()=>{
+//     console.log("Connected to Database");
+// })
+// .catch(err=>{
+//     console.log('error');
+//     console.log(err);
+// });
 
+// mongoose.connect(dbUrl, {
+//     useNewUrlParser:true,
+//     useUnifiedTopology:true,
+// })
+// .then(()=>{
+//     console.log("Connected to Database");
+// })
+// .catch(err=>{
+//     console.log('error');
+//     console.log(err);
+// });
+const secret=process.env.SECRET ||"thisissecret";
 const store=MongoDBStore.create({
     mongoUrl:dbUrl,
-    secret:"thisisnotgoodsecret",
+    secret,
     touchAfter:24*60*60
 
 })
+
 
 store.on('error',(e)=>{
     console.log('SESSION STORE ERROR');
 })
 const sessConfig={
     store,
-    secret:"thisisnotgoodsecret",
+    secret,
     resave:false,
     saveUninitialized:true,
     cookie:{
         httpOnly:true,
-        expires:Date.now() +1000*60*60*24*8,
-        maxAge:1000*60*60*24*8
+        expires:Date.now() +1000*60*60*24*7,
+        maxAge:1000*60*60*24*7
     }
 };
 
@@ -92,6 +106,7 @@ app.set('views',path.join(__dirname,'views'));
 app.use(express.urlencoded({ extended: true}));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname,'public')));
+app.use(express.json());
 
 
 app.engine('ejs',ejsMate);
@@ -109,6 +124,7 @@ app.all('*',(req,res,next)=>{
     next(new ExpressError("Page Not Found",404));
 })
 app.use((err,req,res,next)=>{
+    console.log(err.message);
     const { message="Something Went Wrong",statusCode=500}=err;
     res.status(statusCode).render('campgrounds/errors',{err});
 })
