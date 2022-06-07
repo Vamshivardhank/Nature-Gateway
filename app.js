@@ -33,10 +33,10 @@ const exp = require('constants');
  const dbUrl=process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
 
 
- mongoose.createConnection(dbUrl, {
-    useNewUrlParser:true,
-    useUnifiedTopology:true,
-});
+//  mongoose.createConnection(dbUrl, {
+//     useNewUrlParser:true,
+//     useUnifiedTopology:true,
+// });
 // .then(()=>{
 //     console.log("Connected to Database");
 // })
@@ -45,17 +45,17 @@ const exp = require('constants');
 //     console.log(err);
 // });
 
-// mongoose.connect(dbUrl, {
-//     useNewUrlParser:true,
-//     useUnifiedTopology:true,
-// })
-// .then(()=>{
-//     console.log("Connected to Database");
-// })
-// .catch(err=>{
-//     console.log('error');
-//     console.log(err);
-// });
+mongoose.connect(dbUrl, {
+    useNewUrlParser:true,
+    useUnifiedTopology:true,
+})
+.then(()=>{
+    console.log("Connected to Database");
+})
+.catch(err=>{
+    console.log('error');
+    console.log(err);
+});
 const secret=process.env.SECRET ||"thisissecret";
 const store=MongoDBStore.create({
     mongoUrl:dbUrl,
