@@ -33,10 +33,7 @@ const exp = require('constants');
  const dbUrl=process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
 
 
-//  mongoose.createConnection(dbUrl, {
-//     useNewUrlParser:true,
-//     useUnifiedTopology:true,
-// });
+//  mongoose.createConnection(dbUrl);
 // .then(()=>{
 //     console.log("Connected to Database");
 // })
@@ -45,29 +42,56 @@ const exp = require('constants');
 //     console.log(err);
 // });
 
+
 mongoose.connect(dbUrl, {
-    useNewUrlParser:true,
-    useUnifiedTopology:true,
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false
 })
 .then(()=>{
     console.log("Connected to Database");
 })
 .catch(err=>{
-    console.log('error');
-    console.log(err);
+    console.log('error in connecting to db :',err.message);
+
 });
+
+// const db = mongoose.connection;
+// db.on("error", console.error.bind(console, "connection error:"));
+// db.once("open", () => {
+//     console.log("Database connected");
+// });
+
+
+
+
+
+app.set('view engine','ejs');
+app.set('views',path.join(__dirname,'views'));
+app.use(express.urlencoded({ extended: true}));
+app.use(methodOverride('_method'));
+app.use(express.static(path.join(__dirname,'public')));
+app.use(express.json());
+app.engine('ejs',ejsMate);
+
+
+app.use(mongoSanitize({replaceWith:'_'}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 const secret=process.env.SECRET ||"thisissecret";
 const store=MongoDBStore.create({
     mongoUrl:dbUrl,
     secret,
     touchAfter:24*60*60
-
 })
-
-
 store.on('error',(e)=>{
     console.log('SESSION STORE ERROR');
-})
+});
 const sessConfig={
     store,
     secret,
@@ -82,17 +106,6 @@ const sessConfig={
 
 app.use(session(sessConfig));
 app.use(flash());
-app.use(mongoSanitize());
-
-
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new LocalStategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-
-
-
 app.use((req,res,next)=>{
     res.locals.currentUser=req.user;
     res.locals.success=req.flash('success');
@@ -101,15 +114,6 @@ app.use((req,res,next)=>{
 })
 
 
-app.set('view engine','ejs');
-app.set('views',path.join(__dirname,'views'));
-app.use(express.urlencoded({ extended: true}));
-app.use(methodOverride('_method'));
-app.use(express.static(path.join(__dirname,'public')));
-app.use(express.json());
-
-
-app.engine('ejs',ejsMate);
 
 
 
@@ -129,6 +133,7 @@ app.use((err,req,res,next)=>{
     res.status(statusCode).render('campgrounds/errors',{err});
 })
 const port=process.env.PORT || 3000;
+
 app.listen(port,()=>{
     console.log(`Listining on server ${port}`);
 });
