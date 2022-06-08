@@ -83,7 +83,7 @@ app.use((req,res,next)=>{
     res.locals.currentUser=req.user;
     res.locals.success=req.flash('success');
     res.locals.error=req.flash('error');
-    res.locals.year=(new Date()).getFullYear() ;
+    res.locals.year=(new Date()).getFullYear() || 2022;
     next();
 })
 
