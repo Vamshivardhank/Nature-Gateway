@@ -2,14 +2,17 @@ const mongoose=require('mongoose');
 const Campground=require('../models/campground.js');
 const cities=require('./cities');
 const {descriptors,places} =require('./seedhelpers');
-mongoose.connect('mongodb://localhost:27017/yelp-camp')
-    .then(()=>{
-        console.log("Connecting to Database");
-    })
-    .catch(err=>{
-        console.log("Error in connecting to mongodb");
-        console.log(err);
-    });
+mongoose.connect('mongodb://localhost:27017/yelp-camp',{
+    useNewUrlParser:true,
+     useUnifiedTopology:true,
+})
+.then(()=>{
+    console.log("Connecting to Database");
+})
+.catch(err=>{
+    console.log("Error in connecting to mongodb");
+    console.log(err);
+});
 
  
 const sample=(array)=>{return array[Math.floor(Math.random()*(array.length))];}
@@ -53,4 +56,3 @@ const seedDb=async()=>{
 seedDb();
 
 //'https://source.unsplash.com/collection/483251' 
-

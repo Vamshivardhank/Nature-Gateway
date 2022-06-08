@@ -1,20 +1,7 @@
 const { string } = require('joi');
 const mongoose=require('mongoose');
 const Review = require('./reviews');
-const {Schema}=mongoose;
-
-const dbUrl=process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
-mongoose.connect(dbUrl, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-.then(()=>{
-    console.log("Connected to Database");
-})
-.catch(err=>{
-    console.log('error in connecting to db :',err.message);
-
-});
+const Schema=mongoose.Schema;
 const imageSchema= new Schema({
     url:String,
     filename:String
